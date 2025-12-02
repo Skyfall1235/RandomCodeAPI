@@ -1,4 +1,6 @@
-﻿namespace RandomAPI.Models
+﻿using RandomAPI.Cryptography;
+
+namespace RandomAPI.Models
 {
     public class Event
     {

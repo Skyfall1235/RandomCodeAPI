@@ -3,8 +3,6 @@ using Microsoft.Data.Sqlite;
 
 
 var builder = WebApplication.CreateBuilder(args);
-
-
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -36,9 +34,6 @@ app.Run();
 
 // TODO:
 // - good logging service. rabapp has an event table, i bet i could do something worse
-
-// - add a db. sqlite will probably work here since its small
-//how tf will i get a db in here
 
 // - AlertGatewayService
 //      API Endpoint Goal: POST / alert / ingest
