@@ -1,6 +1,5 @@
 using Dapper;
 using Microsoft.Data.Sqlite;
-// - basic sqlite db
 public class DatabaseService
 {
     private readonly string _connectionString;
