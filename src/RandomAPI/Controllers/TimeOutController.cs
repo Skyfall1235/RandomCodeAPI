@@ -1,28 +1,34 @@
 using Microsoft.AspNetCore.Mvc;
 using RandomAPI.DTOs;
 
-[ApiController]
-[Route("api/[controller]")]
-public class HoursController : ControllerBase
+namespace RandomAPI.Controllers
 {
-    private readonly IHoursService _hoursService;
-
-    public HoursController(IHoursService hoursService)
+    [ApiController]
+    [Route("api/[controller]")]
+    public class HoursController : ControllerBase
     {
-        _hoursService = hoursService;
-    }
+        private readonly IHoursService _hoursService;
+        private readonly ILogger<HoursController> _logger;
 
-    [HttpPost("calculate")]
-    public ActionResult<HoursResponseDto> Calculate(HoursRequestDto dto)
-    {
-        try
+        public HoursController(IHoursService hoursService, ILogger<HoursController> logger)
         {
-            var result = _hoursService.Calculate(dto);
-            return Ok(result);
+            _hoursService = hoursService;
+            _logger = logger;
         }
-        catch (FormatException ex)
+
+        [HttpPost("calculate")]
+        public ActionResult<HoursResponseDto> Calculate(HoursRequestDto dto)
         {
-            return BadRequest(new { error = ex.Message });
+            try
+            {
+                var result = _hoursService.Calculate(dto);
+                return Ok(result);
+            }
+            catch (FormatException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
         }
     }
 }
+
