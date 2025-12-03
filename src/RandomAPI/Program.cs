@@ -24,17 +24,18 @@ builder.Services.AddSingleton<IHoursService, TimeOutService>();
 
 //db
 builder.Services.AddScoped<IEventRepository, EventRepository>();
-//the the end, init the dbs
-using (var scope = builder.Services.CreateScope())
-{
-    var serviceProvider = scope.ServiceProvider;
-    var initializers = serviceProvider.GetServices<IInitializer>();
-    var initializationTasks = initializers.Select(i => i.InitializeAsync());
-    await Task.WhenAll(initializationTasks);
-}
+
 
 var app = builder.Build();
 await DBInitialization.EnsureDb(app.Services);
+//the the end, init the dbs
+using (var scope = app.Services.CreateScope())
+{
+    IServiceProvider? serviceProvider = scope.ServiceProvider;
+    IEnumerable<IInitializer>? initializers = serviceProvider.GetServices<IInitializer>();
+    IEnumerable<Task>? initializationTasks = initializers.Select(i => i.InitializeAsync());
+    await Task.WhenAll(initializationTasks);
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
