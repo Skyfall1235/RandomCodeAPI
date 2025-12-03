@@ -16,6 +16,7 @@ builder.Services.AddTransient<IDbConnection>(_ => new SqliteConnection(
     DBInitialization.CONNECTIONSTRING
 ));
 
+#region Add Services
 //webhook
 builder.Services.AddSingleton<IWebhookService, WebhookService>();
 
@@ -24,18 +25,33 @@ builder.Services.AddSingleton<IHoursService, TimeOutService>();
 
 //db
 builder.Services.AddScoped<IEventRepository, EventRepository>();
+builder.Services.AddScoped<IWebhookRepository, WebhookRepository>();
 
+#endregion
+
+#region Initialization
+//scanner for initializations
+builder.Services.Scan(scan => scan
+    .FromAssemblyOf<IInitializer>()
+    .AddClasses(c => c.AssignableTo<IInitializer>())
+        .As<IInitializer>()
+        .WithScopedLifetime()
+);
 
 var app = builder.Build();
-await DBInitialization.EnsureDb(app.Services);
 //the the end, init the dbs
 using (var scope = app.Services.CreateScope())
 {
     IServiceProvider? serviceProvider = scope.ServiceProvider;
     IEnumerable<IInitializer>? initializers = serviceProvider.GetServices<IInitializer>();
+    if (!initializers.Any())
+    {
+        Console.WriteLine("Warning: No services implementing IInitializer were found.");
+    }
     IEnumerable<Task>? initializationTasks = initializers.Select(i => i.InitializeAsync());
     await Task.WhenAll(initializationTasks);
 }
+#endregion
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

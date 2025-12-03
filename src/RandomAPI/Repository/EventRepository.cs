@@ -5,7 +5,7 @@ using RandomAPI.Models;
 
 namespace RandomAPI.Repository
 {
-    public class EventRepository : IEventRepository
+    public class EventRepository : IEventRepository, IInitializer
     {
         private readonly IDbConnection _db;
         private readonly ILogger<EventRepository> _logger;

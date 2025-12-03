@@ -1,4 +1,6 @@
-﻿using RandomAPI.Models;
+﻿using Dapper;
+using RandomAPI.Models;
+using System.Data;
 
 namespace RandomAPI.Repository
 {
@@ -6,13 +8,13 @@ namespace RandomAPI.Repository
     /// <summary>
     /// Implements CRUD operations for Webhook URLs using Dapper and the provided DatabaseService.
     /// </summary>
-    public class WebhookRepository : IWebhookRepository
+    public class WebhookRepository : IWebhookRepository, IInitializer
     {
-        private readonly DatabaseService _dbService;
+        private readonly IDbConnection _db;
 
-        public WebhookRepository(DatabaseService dbService)
+        public WebhookRepository(IDbConnection dbService)
         {
-            _dbService = dbService;
+            _db = dbService;
         }
 
         /// <summary>
@@ -27,7 +29,7 @@ namespace RandomAPI.Repository
                 Url TEXT NOT NULL UNIQUE
             );";
 
-            await _dbService.ExecuteAsync(sql);
+            await _db.ExecuteAsync(sql);
         }
 
         /// <summary>
@@ -38,7 +40,7 @@ namespace RandomAPI.Repository
         {
             const string sql = "SELECT Id, Url FROM WebhookUrls ORDER BY Id;";
             // Dapper maps the columns to the WebhookUrl model properties
-            return await _dbService.QueryAsync<WebhookUrl>(sql);
+            return await _db.QueryAsync<WebhookUrl>(sql);
         }
 
         /// <summary>
@@ -49,7 +51,7 @@ namespace RandomAPI.Repository
         {
             // SQLITE specific command to ignore unique constraint errors if URL already exists
             const string sql = "INSERT OR IGNORE INTO WebhookUrls (Url) VALUES (@Url);";
-            await _dbService.ExecuteAsync(sql, new { Url = url });
+            await _db.ExecuteAsync(sql, new { Url = url });
         }
 
         /// <summary>
@@ -60,7 +62,7 @@ namespace RandomAPI.Repository
         public async Task<int> DeleteUrlAsync(string url)
         {
             const string sql = "DELETE FROM WebhookUrls WHERE Url = @Url;";
-            return await _dbService.ExecuteAsync(sql, new { Url = url });
+            return await _db.ExecuteAsync(sql, new { Url = url });
         }
     }
 }

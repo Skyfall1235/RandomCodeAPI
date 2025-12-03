@@ -5,7 +5,7 @@ namespace RandomAPI.Repository
     /// <summary>
     /// Defines the contract for persistence operations related to the Event model.
     /// </summary>
-    public interface IEventRepository : IInitializer
+    public interface IEventRepository
     {
         /// <summary>
         /// Attempts to add a new Event record to the database.
