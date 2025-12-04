@@ -40,9 +40,10 @@ namespace RandomAPI.Services.Webhooks
 
         public async Task<IActionResult> HandleUnregisterActionAsync([FromBody] string url)
         {
+            string safeUrlForLog = url;
             if (string.IsNullOrWhiteSpace(url))
             {
-            var safeUrlForLog = url.Replace("\r", "").Replace("\n", "");
+            safeUrlForLog = url.Replace("\r", "").Replace("\n", "");
                 return new BadRequestObjectResult("URL cannot be empty.");
             }
             url = url.Trim();
