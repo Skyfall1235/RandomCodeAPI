@@ -86,7 +86,7 @@ namespace RandomAPI.Controllers
             if (!listeners.Any())
                 return BadRequest("No listeners registered to broadcast to.");
 
-            _logger.LogInformation("Broadcasting Discord payload: {Message}", payload.content);
+            _logger.LogInformation("Broadcasting Discord payload: {Message}", payload.content?.Replace("\r", "").Replace("\n", ""));
 
             await _webhookService.BroadcastAsync(payload);
 
