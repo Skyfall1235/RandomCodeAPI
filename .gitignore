@@ -63,3 +63,4 @@ dist/
 ## OS garbage
 .DS_Store
 Thumbs.db
+src/RandomAPI/PersonalDev.db
