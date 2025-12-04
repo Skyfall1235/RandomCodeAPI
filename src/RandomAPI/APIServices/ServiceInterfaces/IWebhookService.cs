@@ -4,6 +4,7 @@ using RandomAPI.Services.Webhooks;
 
 public interface IWebhookService
 {
+    // Basel class methods
     /// <summary>
     /// Sends a webhook notification to all registered listeners.
     /// </summary>
@@ -30,7 +31,6 @@ public interface IWebhookService
     /// returns a snapshot of all registered listenrs of a given type
     /// </summary>
     /// <param name="type"> the type of url</param>
-
     Task<IEnumerable<string>> GetListenersAsync(WebhookType type = WebhookType.Default);
 
     // Controller Logic Methods (Implemented in the derived class)
@@ -44,5 +44,6 @@ public interface IWebhookService
     {
         Default = 0, 
         Discord = 1,
+        Logging = 2,
     }
 }
